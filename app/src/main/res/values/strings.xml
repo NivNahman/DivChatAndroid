@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">DivChatAndroidApp</string>
+    <string name="login_username">UserName</string>
+    <string name="login_password">Password</string>
+    <string name="login_submitBtn">Submit</string>
+    <string name="signup_nickname">Nickname</string>
+    <string name="dont_have_an_account_signup">dont have an account? Signup</string>
+    <string name="already_have_an_account_login">already have an account? Login</string>
+</resources>
