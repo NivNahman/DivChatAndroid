@@ -21,7 +21,7 @@ public class LoginPage extends AppCompatActivity {
     private boolean isSigningUp = false;
     private ActivityLoginBinding binding;
     private AppDB db;
-    PostDao postDao;
+    ChatDao postDao;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +34,7 @@ public class LoginPage extends AppCompatActivity {
                 .allowMainThreadQueries()
                 .build();
 
-        postDao = db.postDao();
+        postDao = db.chatDao();
 
 
         setContentView(binding.getRoot());
@@ -43,8 +43,8 @@ public class LoginPage extends AppCompatActivity {
             if(binding.loginUsername.getText().toString().isEmpty() || binding.loginPassword.getText().toString().isEmpty()){
                 Toast.makeText(LoginPage.this, "There is an empty field", Toast.LENGTH_SHORT).show();
             }
-//            Intent intent = new Intent(this, ContactList.class);
-//            startActivity(intent);
+            Intent intent = new Intent(this, ContactList.class);
+            startActivity(intent);
         });
         alreadyHaveAccountBtn.setOnClickListener(v -> {
             Intent intent = new Intent(this, SignUpPage.class);

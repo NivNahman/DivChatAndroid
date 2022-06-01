@@ -17,6 +17,9 @@
             android:name=".ContactList"
             android:exported="false" />
         <activity
+            android:name=".ChatScreen"
+            android:exported="false" />
+        <activity
             android:name=".LoginPage"
             android:exported="true">
             <intent-filter>
