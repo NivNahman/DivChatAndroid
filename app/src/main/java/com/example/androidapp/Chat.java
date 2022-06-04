@@ -3,16 +3,24 @@ package com.example.androidapp;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "Chat_table")
+@Entity
 public class Chat {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
     private String name;
 //
 //    private List<Message> messages;
 
-    public Chat(int id) {
-        this.id = id;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Chat(String name) {
+        this.name = name;
 //        this.contact = contact;
 //        this.messages = messages;
     }
@@ -26,6 +34,15 @@ public class Chat {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Chat{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
 
