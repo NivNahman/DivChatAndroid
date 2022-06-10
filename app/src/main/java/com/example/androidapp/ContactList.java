@@ -73,8 +73,8 @@ public class ContactList extends AppCompatActivity {
 //
 //        });
 
-        db= Room.databaseBuilder(getApplicationContext(), AppDB.class, "DivDB").allowMainThreadQueries().build();
-        chatDao = db.chatDao();
+//        db= Room.databaseBuilder(getApplicationContext(), AppDB.class, "DivDB").allowMainThreadQueries().build();
+        chatDao = AppDB.getDb(getBaseContext()).chatDao();
         //contacts = postDao.index().get(0).getChats();
 
         FloatingActionButton addContactBtn = findViewById(R.id.addContactBtn);
@@ -103,6 +103,7 @@ public class ContactList extends AppCompatActivity {
 
         lvContacts.setOnItemClickListener((adapterView,view,i,l)->{
             Intent intent = new Intent(this, ChatScreen.class);
+            intent.putExtra("id",chats.get(i).getId());
             startActivity(intent);
         });
 
