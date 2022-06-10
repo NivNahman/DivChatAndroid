@@ -30,11 +30,12 @@ public class LoginPage extends AppCompatActivity {
         login_password = binding.loginPassword;
         login_submitbtn = binding.loginSubmitBtn;
         alreadyHaveAccountBtn = binding.alreadyHaveAccountBtn;
-        db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "DivDB")
-                .allowMainThreadQueries()
-                .build();
+//        db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "DivDB")
+//                .allowMainThreadQueries()
+//                .build();
 
-        postDao = db.chatDao();
+//        postDao = db.chatDao();
+        postDao = AppDB.getDb(getBaseContext()).chatDao();
 
 
         setContentView(binding.getRoot());

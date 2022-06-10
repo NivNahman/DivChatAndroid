@@ -12,22 +12,29 @@ public class Message {
     private String created;
     private Boolean sent;
 
-    public Message(int id, String content, String created, Boolean sent) {
-        this.mesid = id;
+    public Message(String content, String created, Boolean sent) {
         this.content = content;
         this.created = created;
         this.sent = sent;
+    }
+
+    public int getMesid() {
+        return mesid;
+    }
+
+    public void setMesid(int mesid) {
+        this.mesid = mesid;
     }
 
     public Message() {
     }
 
     public int getId() {
-        return mesid;
+        return id;
     }
 
     public void setId(int id) {
-        this.mesid = id;
+        this.id = id;
     }
 
     public String getContent() {
