@@ -1,8 +1,12 @@
 package com.example.androidapp.api;
 
+import android.widget.Toast;
+
 import com.example.androidapp.Contact;
+import com.example.androidapp.LoginPage;
 import com.example.androidapp.MyApplication;
 import com.example.androidapp.R;
+import com.example.androidapp.User;
 
 import java.util.List;
 
@@ -15,7 +19,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class PostAPI {
 
     Retrofit retrofit;
-    WebServiceAPI webServiceAPI;
+    private WebServiceAPI webServiceAPI;
+
+    public WebServiceAPI getWebServiceAPI() {
+        return webServiceAPI;
+    }
+
+    public void setWebServiceAPI(WebServiceAPI webServiceAPI) {
+        this.webServiceAPI = webServiceAPI;
+    }
 
     public PostAPI() {
 
@@ -26,18 +38,19 @@ public class PostAPI {
         webServiceAPI = retrofit.create(WebServiceAPI.class);
     }
 
-    public void get() {
-        Call<List<Contact>> call = webServiceAPI.getContacts();
-        call.enqueue(new Callback<List<Contact>>() {
-            @Override
-            public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
-                //7261
-                List<Contact> contacts= response.body();
-            }
-
-            @Override
-            public void onFailure(Call<List<Contact>> call, Throwable t) {
-            }
-        });
-    }
+//    public void get() {
+//        Call<List<User>> call = webServiceAPI.getUsers();
+//        call.enqueue(new Callback<List<User>>() {
+//            @Override
+//            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+//                //7261
+//                List<User> users = response.body();
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<User>> call, Throwable t) {
+//                Toast.makeText(LoginPage.this,"FAILED !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 }
