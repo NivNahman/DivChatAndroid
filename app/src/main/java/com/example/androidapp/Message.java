@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "Message_table")
 public class Message {
     @PrimaryKey(autoGenerate = true)
-    private int Mesid;
+    private int mesid;
     private int id;
     private String content;
     private String created;
