@@ -1,5 +1,6 @@
 package com.example.androidapp;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.example.androidapp.databinding.ActivityChatScreenBinding;
+import com.example.androidapp.databinding.ItemContainerSentMessageBinding;
+import com.example.androidapp.databinding.ItemContainerRecivedMessageBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -30,9 +33,12 @@ public class ChatScreen extends AppCompatActivity {
     private TextView name;
     private View back;
     private View send;
-    private ArrayAdapter<Message> adapter;
+//    private ArrayAdapter<Message> adapter;
     private EditText input;
     private int id;
+//    private ItemContainerSentMessageBinding sentMessageBinding;
+//    private ItemContainerRecivedMessageBinding recivedMessageBinding;
+    private ChatAdapter chatAdapter = new ChatAdapter(messages);
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -65,10 +71,13 @@ public class ChatScreen extends AppCompatActivity {
             input.setText("");
         });
 
+        binding.chatRecyclerView.setAdapter(chatAdapter);
 //
-        ListView rvMessages = findViewById(R.id.chatRecyclerView);
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, messages);
-        rvMessages.setAdapter(adapter);
+
+//        ListView rvMessages = findViewById(R.id.chatRecyclerView);
+//        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, messages);
+//        rvMessages.setAdapter(adapter);
+
 
 //        for (Message message : messages){
 //            if (message.getSent()){
@@ -96,12 +105,14 @@ public class ChatScreen extends AppCompatActivity {
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onResume(){
         super.onResume();
         messages.clear();
         messages.addAll(messageDao.get(id));
-        adapter.notifyDataSetChanged();
+        chatAdapter.notifyDataSetChanged();
+        binding.chatRecyclerView.setVisibility(View.VISIBLE);
     }
 
 
