@@ -8,6 +8,8 @@ import androidx.room.PrimaryKey;
 public class Contact {
     @NonNull
     @PrimaryKey
+    private String id;
+
     private String name ;
 
     private String server;
@@ -16,7 +18,8 @@ public class Contact {
 
     private String lastdate;
 
-    public Contact(String name, String server, String last, String lastdate) {
+    public Contact(String id, String name, String server, String last, String lastdate) {
+        this.id = id;
         this.name = name;
         this.server = server;
         this.last = last;
@@ -26,6 +29,14 @@ public class Contact {
     public Contact() {
     }
 
+    @NonNull
+    public String getId() {
+        return id;
+    }
+
+    public void setId(@NonNull String id) {
+        this.id = id;
+    }
 //    public String getId() {
 //        return id;
 //    }
