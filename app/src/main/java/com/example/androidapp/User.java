@@ -1,4 +1,4 @@
-package com.example.androidapp;//package com.example.divchatandroidapp;
+//package com.example.androidapp;//package com.example.divchatandroidapp;
 //
 //import androidx.annotation.NonNull;
 //import androidx.room.Entity;
@@ -10,15 +10,15 @@ package com.example.androidapp;//package com.example.divchatandroidapp;
 //public class User {
 //    @NonNull
 //    @PrimaryKey
-//    private String Username ;
+//    private String Username;
 //
-//    private String Nickname ;
+//    private String Nickname;
 //
-//    private String Password ;
+//    private String Password;
 //
-//    private String SrcImg ;
+//    private String SrcImg;
 //
-//    private List<Chat> chats ;
+//    private List<Chat> chats;
 //
 //    public User(String username, String nickname, String password, String srcImg) {
 //        Username = username;
@@ -27,9 +27,9 @@ package com.example.androidapp;//package com.example.divchatandroidapp;
 //        SrcImg = srcImg;
 //        chats = new ArrayList<Chat>();
 //    }
+//
 //    public User() {
 //    }
-//
 //
 ////    public int getId() {
 ////        return id;

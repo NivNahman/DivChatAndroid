@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
+import com.example.androidapp.api.PostAPI;
 import com.example.androidapp.databinding.ActivityLoginBinding;
 
 
@@ -36,7 +37,8 @@ public class LoginPage extends AppCompatActivity {
 
 //        postDao = db.chatDao();
         postDao = AppDB.getDb(getBaseContext()).chatDao();
-
+        PostAPI postAPI = new PostAPI();
+        postAPI.get();
 
         setContentView(binding.getRoot());
         //Button loginBtn = findViewById(R.id.loginbtn);
@@ -44,8 +46,11 @@ public class LoginPage extends AppCompatActivity {
             if(binding.loginUsername.getText().toString().isEmpty() || binding.loginPassword.getText().toString().isEmpty()){
                 Toast.makeText(LoginPage.this, "There is an empty field", Toast.LENGTH_SHORT).show();
             }
-            Intent intent = new Intent(this, ContactList.class);
-            startActivity(intent);
+            else{
+                Intent intent = new Intent(this, ContactList.class);
+                startActivity(intent);
+            }
+
         });
         alreadyHaveAccountBtn.setOnClickListener(v -> {
             Intent intent = new Intent(this, SignUpPage.class);
