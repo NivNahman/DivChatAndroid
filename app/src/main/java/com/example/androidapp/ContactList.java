@@ -33,6 +33,7 @@
 package com.example.androidapp;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -55,23 +56,15 @@ import retrofit2.Response;
 
 public class ContactList extends AppCompatActivity {
     List<Chat> chats = new ArrayList<Chat>();
-
+    private static final String ALLOWED_URI_CHARS = "@#&=*+-_.,:!?()/~'%";
     private ActivityContactListBinding binding;
     private AppDB db;
     private ChatDao chatDao;
     private ArrayAdapter<Chat> adapter;
-    private String connectedUserID;
+    private String UsernameID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
-
-//        chats.add(new Chat(new Contact("a","a","a","a","a")));
-//        chats.add(new Chat(new Contact("b","b","b","b","b")));
-//        chats.add(new Chat(new Contact("c","c","c","c","c")));
-
-
 
         super.onCreate(savedInstanceState);
         binding = ActivityContactListBinding.inflate(getLayoutInflater());
@@ -82,16 +75,17 @@ public class ContactList extends AppCompatActivity {
 //        });
 
 //        db= Room.databaseBuilder(getApplicationContext(), AppDB.class, "DivDB").allowMainThreadQueries().build();
-        connectedUserID = getIntent().getExtras().getString("username");
         chatDao = AppDB.getDb(getBaseContext()).chatDao();
         //contacts = postDao.index().get(0).getChats();
-        getcontacts(connectedUserID);
-
+        UsernameID = getIntent().getExtras().getString("username");
+        //String trying = "?connecteduser=" + UsernameID;
+        //String urlEncoded = Uri.encode(trying, ALLOWED_URI_CHARS);
+        get_contacts(UsernameID);
         FloatingActionButton addContactBtn = findViewById(R.id.addContactBtn);
         addContactBtn.setOnClickListener(view -> {
-            Contact contact = new Contact("a","a","a","a","a");
-            Chat newChat = new Chat("a");
-            chatDao.insert(newChat);
+            //Contact contact = new Contact("a","a","a","a");
+            //Chat newChat = new Chat("a");
+            //chatDao.insert(newChat);
 //            chats.clear();
 //            chats.addAll(chatDao.index());
 //            adapter.notifyDataSetChanged();
@@ -103,30 +97,30 @@ public class ContactList extends AppCompatActivity {
         lvContacts.setAdapter(adapter);
 
 
-
-        lvContacts.setOnItemLongClickListener((adapterView,view,i,l)->{
+        lvContacts.setOnItemLongClickListener((adapterView, view, i, l) -> {
             Chat chat = chats.remove(i);
             chatDao.delete(chat);
             adapter.notifyDataSetChanged();
             return true;
         });
 
-        lvContacts.setOnItemClickListener((adapterView,view,i,l)->{
+        lvContacts.setOnItemClickListener((adapterView, view, i, l) -> {
             Intent intent = new Intent(this, ChatScreen.class);
-            intent.putExtra("id",chats.get(i).getId());
+            intent.putExtra("id", chats.get(i).getId());
             startActivity(intent);
         });
 
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         chats.clear();
         chats.addAll(chatDao.index());
         adapter.notifyDataSetChanged();
     }
-    public void getcontacts(String username) {
+
+    public void get_contacts(String username) {
         PostAPI postAPI = new PostAPI();
         WebServiceAPI webServiceAPI = postAPI.getWebServiceAPI();
         Call<List<Contact>> call = webServiceAPI.getcontacts(username);
@@ -136,9 +130,7 @@ public class ContactList extends AppCompatActivity {
                 //7261
                 //Toast.makeText(LoginPage.this, "SUCCESS !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
                 List<Contact> contacts = response.body();
-                Intent intent = new Intent(ContactList.this, ContactList.class);
-                //intent.putExtra("username",user.getUsername());
-                startActivity(intent);
+
             }
 
             @Override
@@ -146,4 +138,5 @@ public class ContactList extends AppCompatActivity {
                 Toast.makeText(ContactList.this, "FAILED !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
             }
         });
-}}
+    }
+}
