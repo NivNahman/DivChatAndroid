@@ -1,7 +1,6 @@
 package com.example.androidapp;
 
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.Room;
 
 import com.example.androidapp.api.PostAPI;
 import com.example.androidapp.api.WebServiceAPI;
@@ -19,8 +17,6 @@ import com.example.androidapp.databinding.ActivityLoginBinding;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
