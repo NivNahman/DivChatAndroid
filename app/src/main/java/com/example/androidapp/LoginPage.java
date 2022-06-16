@@ -30,7 +30,7 @@ public class LoginPage extends AppCompatActivity {
     private boolean isSigningUp = false;
     private ActivityLoginBinding binding;
     private AppDB db;
-    ChatDao postDao;
+    ContactDao postDao;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +44,7 @@ public class LoginPage extends AppCompatActivity {
 //                .build();
 
 //        postDao = db.chatDao();
-        postDao = AppDB.getDb(getBaseContext()).chatDao();
+        postDao = AppDB.getDb(getBaseContext()).contactDao();
 
         setContentView(binding.getRoot());
         //Button loginBtn = findViewById(R.id.loginbtn);

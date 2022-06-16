@@ -76,4 +76,11 @@ public class Contact {
     public void setLastdate(String lastdate) {
         this.lastdate = lastdate;
     }
+
+    @Override
+    public String toString() {
+        return "Contact{" +
+                "name='" + name  +
+                '}';
+    }
 }

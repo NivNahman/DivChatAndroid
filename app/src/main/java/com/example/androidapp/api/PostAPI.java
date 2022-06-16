@@ -38,19 +38,4 @@ public class PostAPI {
         webServiceAPI = retrofit.create(WebServiceAPI.class);
     }
 
-//    public void get() {
-//        Call<List<User>> call = webServiceAPI.getUsers();
-//        call.enqueue(new Callback<List<User>>() {
-//            @Override
-//            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-//                //7261
-//                List<User> users = response.body();
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<User>> call, Throwable t) {
-//                Toast.makeText(LoginPage.this,"FAILED !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
 }
