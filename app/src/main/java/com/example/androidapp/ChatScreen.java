@@ -9,12 +9,15 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import com.example.androidapp.api.PostAPI;
+import com.example.androidapp.api.WebServiceAPI;
 import com.example.androidapp.databinding.ActivityChatScreenBinding;
 import com.example.androidapp.databinding.ItemContainerSentMessageBinding;
 import com.example.androidapp.databinding.ItemContainerRecivedMessageBinding;
@@ -23,22 +26,23 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ChatScreen extends AppCompatActivity {
 
-    List<Message> messages = new ArrayList<Message>();
+    static public int id = 9;
+    private List<Message> messages = new ArrayList<Message>();
     private ActivityChatScreenBinding binding;
-    private AppDB db;
-    private ChatDao chatDao;
     private MessageDao messageDao;
     private TextView name;
     private View back;
     private View send;
-//    private ArrayAdapter<Message> adapter;
     private EditText input;
-    private int id;
-//    private ItemContainerSentMessageBinding sentMessageBinding;
-//    private ItemContainerRecivedMessageBinding recivedMessageBinding;
+    private String contact_id;
     private ChatAdapter chatAdapter = new ChatAdapter(messages);
+    private String ConnectedUsername;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -47,61 +51,32 @@ public class ChatScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityChatScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-//        db= Room.databaseBuilder(getApplicationContext(), AppDB.class, "DivDB").allowMainThreadQueries().build();
-//        chatDao = db.chatDao();
-        chatDao = AppDB.getDb(getBaseContext()).chatDao();
-        id = getIntent().getExtras().getInt("id");
+        contact_id = getIntent().getExtras().getString("contact_id");
+        ConnectedUsername = getIntent().getExtras().getString("connectedUsername");
         name = findViewById(R.id.textName);
         back = findViewById(R.id.imageBack);
         back.setOnClickListener(v -> {
             Intent intent = new Intent(this, ContactList.class);
             startActivity(intent);
         });
-        name.setText(""+id+"");
-       messageDao = AppDB.getDb(getBaseContext()).messageDao();
-
-        send = findViewById(R.id.layoutSend);
-        send.setOnClickListener(v -> {
-            input = findViewById(R.id.inputMessage);
-            Message message = new Message(input.getText().toString(),java.time.LocalDateTime.now().toString(),true);
-            message.setId(id);
-            messageDao.insert(message);
-            // messages.add(message);
-            onResume();
-            input.setText("");
-        });
+        name.setText(""+contact_id+"");
+        messageDao = AppDB.getDb(getBaseContext()).messageDao();
 
         binding.chatRecyclerView.setAdapter(chatAdapter);
-//
 
-//        ListView rvMessages = findViewById(R.id.chatRecyclerView);
-//        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, messages);
-//        rvMessages.setAdapter(adapter);
-
-
-//        for (Message message : messages){
-//            if (message.getSent()){
-//
-//            }
-//        }
-
-//        send = findViewById(R.id.layoutSend);
-//        send.setOnClickListener(v -> {
+        input = findViewById(R.id.inputMessage);
+        send = findViewById(R.id.layoutSend);
+        send.setOnClickListener(v -> {
 //            input = findViewById(R.id.inputMessage);
-//            Message message = new Message(input.getText().toString(),java.time.LocalDateTime.now().toString(),true);
-//            message.setId(id);
+//            Message message = new Message(id, input.getText().toString(),java.time.LocalDateTime.now().toString(),true);
+//            message.setContactID(contact_id);
 //            messageDao.insert(message);
-//            // messages.add(message);
-//            onResume();
-//            input.setText("");
-//        });
+            new_message(contact_id,ConnectedUsername);
+            // messages.add(message);
+            //onResume();
+            input.setText("");
 
-
-
-
-
-
-
+        });
 
     }
 
@@ -109,11 +84,47 @@ public class ChatScreen extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        messages.clear();
-        messages.addAll(messageDao.get(id));
+        //messages.clear();
+        messages.addAll(messageDao.get(contact_id));
         chatAdapter.notifyDataSetChanged();
         binding.chatRecyclerView.setVisibility(View.VISIBLE);
     }
 
+    public void new_message(String contact_id,String ConnectedUsername){
+        PostAPI postAPI = new PostAPI();
+        WebServiceAPI webServiceAPI = postAPI.getWebServiceAPI();
+        Call<Void> call = webServiceAPI.newmessage(contact_id,new Addmsg(ConnectedUsername,contact_id,input.getText().toString()));
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                for (Message m : messages) {
+                    messageDao.delete(m);
+                }
+                messages.clear();
+                Call<List<Message>> call2 = webServiceAPI.getmessages(contact_id, ConnectedUsername);
+                call2.enqueue(new retrofit2.Callback<List<Message>>() {
+                    @Override
+                    public void onResponse(Call<List<Message>> call2, Response<List<Message>> response2) {
+                        List<Message> messages2 = response2.body();
+                        for (Message message : messages2) {
+                            message.setContactID(contact_id);
+                            messageDao.insert(message);
+                        }
+                        onResume();
+                    }
 
+                    @Override
+                    public void onFailure(Call<List<Message>> call2, Throwable t) {
+                        System.out.println("connection failed");
+                    }
+                });
+                //onResume();
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(ChatScreen.this, "FAILED !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

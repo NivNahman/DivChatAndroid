@@ -55,12 +55,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ContactList extends AppCompatActivity {
-    List<Chat> chats = new ArrayList<Chat>();
-    private static final String ALLOWED_URI_CHARS = "@#&=*+-_.,:!?()/~'%";
+    List<Contact> contacts = new ArrayList<Contact>();
+    //private static final String ALLOWED_URI_CHARS = "@#&=*+-_.,:!?()/~'%";
     private ActivityContactListBinding binding;
-    private AppDB db;
-    private ChatDao chatDao;
-    private ArrayAdapter<Chat> adapter;
+    //private AppDB db;
+    private ContactDao contactDao;
+    private MessageDao messageDao;
+    private ArrayAdapter<Contact> adapter;
     private String UsernameID;
 
     @Override
@@ -75,12 +76,19 @@ public class ContactList extends AppCompatActivity {
 //        });
 
 //        db= Room.databaseBuilder(getApplicationContext(), AppDB.class, "DivDB").allowMainThreadQueries().build();
-        chatDao = AppDB.getDb(getBaseContext()).chatDao();
+        contactDao = AppDB.getDb(getBaseContext()).contactDao();
+        messageDao = AppDB.getDb(getBaseContext()).messageDao();
         //contacts = postDao.index().get(0).getChats();
         UsernameID = getIntent().getExtras().getString("username");
         //String trying = "?connecteduser=" + UsernameID;
         //String urlEncoded = Uri.encode(trying, ALLOWED_URI_CHARS);
         get_contacts(UsernameID);
+//        AppDB.updateRoomDB(UsernameID);
+//        System.out.println("========================================");
+//        for (Contact contact : contactDao.index()) {
+//            System.out.println(contact);
+//        }
+//        System.out.println("========================================");
         FloatingActionButton addContactBtn = findViewById(R.id.addContactBtn);
         addContactBtn.setOnClickListener(view -> {
             //Contact contact = new Contact("a","a","a","a");
@@ -93,20 +101,21 @@ public class ContactList extends AppCompatActivity {
         });
 
         ListView lvContacts = findViewById(R.id.ContactList);
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, chats);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, contacts);
         lvContacts.setAdapter(adapter);
 
 
         lvContacts.setOnItemLongClickListener((adapterView, view, i, l) -> {
-            Chat chat = chats.remove(i);
-            chatDao.delete(chat);
+            Contact chat = contacts.remove(i);
+            contactDao.delete(chat);
             adapter.notifyDataSetChanged();
             return true;
         });
 
         lvContacts.setOnItemClickListener((adapterView, view, i, l) -> {
             Intent intent = new Intent(this, ChatScreen.class);
-            intent.putExtra("id", chats.get(i).getId());
+            intent.putExtra("contact_id", contacts.get(i).getId());
+            intent.putExtra("connectedUsername", UsernameID);
             startActivity(intent);
         });
 
@@ -115,8 +124,8 @@ public class ContactList extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        chats.clear();
-        chats.addAll(chatDao.index());
+        contacts.clear();
+        contacts.addAll(contactDao.index());
         adapter.notifyDataSetChanged();
     }
 
@@ -130,7 +139,29 @@ public class ContactList extends AppCompatActivity {
                 //7261
                 //Toast.makeText(LoginPage.this, "SUCCESS !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
                 List<Contact> contacts = response.body();
+                AppDB.clearRoomDB();
+                for (Contact contact:contacts) {
+                    contactDao.insert(contact);
+                    Call<List<Message>> call2 = webServiceAPI.getmessages(contact.getId(), username);
+                    call2.enqueue(new Callback<List<Message>>() {
+                        @Override
+                        public void onResponse(Call<List<Message>> call2, Response<List<Message>> response2) {
+                            //7261
+                            //Toast.makeText(LoginPage.this, "SUCCESS !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
+                            List<Message> messages = response2.body();
+                            for (Message message:messages) {
+                                message.setContactID(contact.getId());
+                                messageDao.insert(message);
+                            }
+                        }
 
+                        @Override
+                        public void onFailure(Call<List<Message>> call2, Throwable t) {
+                            Toast.makeText(ContactList.this, "FAILED !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                onResume();
             }
 
             @Override

@@ -5,25 +5,35 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "Message_table")
 public class Message {
-    @PrimaryKey(autoGenerate = true)
-    private int mesid;
+    @PrimaryKey
     private int id;
     private String content;
     private String created;
     private Boolean sent;
+    private String contactID;
 
-    public Message(String content, String created, Boolean sent) {
+    public Message(int id, String content, String created, Boolean sent) {
+        this.id = id;
         this.content = content;
         this.created = created;
         this.sent = sent;
     }
-  public int getMesid() {
-        return mesid;
+
+    public String getContactID() {
+        return contactID;
     }
 
-    public void setMesid(int mesid) {
-        this.mesid = mesid;
+    public void setContactID(String contactID) {
+        this.contactID = contactID;
     }
+
+    //  public int getMesid() {
+//        return mesid;
+//    }
+//
+//    public void setMesid(int mesid) {
+//        this.mesid = mesid;
+//    }
     public Message() {
     }
 
@@ -57,6 +67,17 @@ public class Message {
 
     public void setSent(Boolean sent) {
         this.sent = sent;
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "id=" + id +
+                ", content='" + content + '\'' +
+                ", created='" + created + '\'' +
+                ", sent=" + sent +
+                ", contactID='" + contactID + '\'' +
+                '}';
     }
 }
 
