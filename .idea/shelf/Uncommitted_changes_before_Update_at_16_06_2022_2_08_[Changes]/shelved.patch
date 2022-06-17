@@ -1,0 +1,100 @@
+Index: app/src/main/java/com/example/androidapp/ContactList.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>//package com.example.androidapp;\r\n//\r\n//import android.os.Bundle;\r\n//\r\n//import androidx.appcompat.app.AppCompatActivity;\r\n//import androidx.room.Room;\r\n//\r\n//import com.example.androidapp.databinding.ActivityContactListBinding;\r\n//\r\n//public class ContactList extends AppCompatActivity {\r\n//    //List<String> contacts = new ArrayList<String>();\r\n//    private ActivityContactListBinding binding;\r\n//    private AppDB db;\r\n//    @Override\r\n//    protected void onCreate(Bundle savedInstanceState) {\r\n////        contacts.add(\"Niv\");\r\n////        contacts.add(\"Dvir\");\r\n////        contacts.add(\"Omer\");\r\n//        super.onCreate(savedInstanceState);\r\n//        binding = ActivityContactListBinding.inflate(getLayoutInflater());\r\n//        setContentView(binding.getRoot());\r\n//        db= Room.databaseBuilder(getApplicationContext(), AppDB.class, \"DivDB\").allowMainThreadQueries().build();\r\n//       // Button addContact = findViewById(R.id.addContactBtn);\r\n////        addContact.setOnClickListener(view -> {\r\n////\r\n////        });\r\n//    }\r\n//\r\n//\r\n//}\r\n\r\n\r\npackage com.example.androidapp;\r\n\r\nimport android.content.Intent;\r\nimport android.os.Bundle;\r\nimport android.widget.ArrayAdapter;\r\nimport android.widget.ListView;\r\n\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.room.Room;\r\n\r\nimport com.example.androidapp.databinding.ActivityContactListBinding;\r\nimport com.google.android.material.floatingactionbutton.FloatingActionButton;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\n\r\npublic class ContactList extends AppCompatActivity {\r\n    List<Chat> chats = new ArrayList<Chat>();\r\n\r\n    private ActivityContactListBinding binding;\r\n    private AppDB db;\r\n    private ChatDao chatDao;\r\n    private ArrayAdapter<Chat> adapter;\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n\r\n\r\n\r\n//        chats.add(new Chat(new Contact(\"a\",\"a\",\"a\",\"a\",\"a\")));\r\n//        chats.add(new Chat(new Contact(\"b\",\"b\",\"b\",\"b\",\"b\")));\r\n//        chats.add(new Chat(new Contact(\"c\",\"c\",\"c\",\"c\",\"c\")));\r\n\r\n\r\n\r\n        super.onCreate(savedInstanceState);\r\n        binding = ActivityContactListBinding.inflate(getLayoutInflater());\r\n        setContentView(binding.getRoot());\r\n        // Button addContact = findViewById(R.id.addContactBtn);\r\n//        addContact.setOnClickListener(view -> {\r\n//\r\n//        });\r\n\r\n//        db= Room.databaseBuilder(getApplicationContext(), AppDB.class, \"DivDB\").allowMainThreadQueries().build();\r\n        chatDao = AppDB.getDb(getBaseContext()).chatDao();\r\n        //contacts = postDao.index().get(0).getChats();\r\n\r\n        FloatingActionButton addContactBtn = findViewById(R.id.addContactBtn);\r\n        addContactBtn.setOnClickListener(view -> {\r\n            Contact contact = new Contact(\"a\",\"a\",\"a\",\"a\");\r\n            Chat newChat = new Chat(\"a\");\r\n            chatDao.insert(newChat);\r\n//            chats.clear();\r\n//            chats.addAll(chatDao.index());\r\n//            adapter.notifyDataSetChanged();\r\n            onResume();\r\n        });\r\n\r\n        ListView lvContacts = findViewById(R.id.ContactList);\r\n        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, chats);\r\n        lvContacts.setAdapter(adapter);\r\n\r\n\r\n\r\n        lvContacts.setOnItemLongClickListener((adapterView,view,i,l)->{\r\n            Chat chat = chats.remove(i);\r\n            chatDao.delete(chat);\r\n            adapter.notifyDataSetChanged();\r\n            return true;\r\n        });\r\n\r\n        lvContacts.setOnItemClickListener((adapterView,view,i,l)->{\r\n            Intent intent = new Intent(this, ChatScreen.class);\r\n            intent.putExtra(\"id\",chats.get(i).getId());\r\n            startActivity(intent);\r\n        });\r\n\r\n    }\r\n\r\n    @Override\r\n    protected void onResume(){\r\n        super.onResume();\r\n        chats.clear();\r\n        chats.addAll(chatDao.index());\r\n        adapter.notifyDataSetChanged();\r\n    }\r\n\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/androidapp/ContactList.java b/app/src/main/java/com/example/androidapp/ContactList.java
+--- a/app/src/main/java/com/example/androidapp/ContactList.java	(revision 10d6f6374a6005a0b84102112d0e1bd4102c1e84)
++++ b/app/src/main/java/com/example/androidapp/ContactList.java	(date 1655334417733)
+@@ -36,16 +36,23 @@
+ import android.os.Bundle;
+ import android.widget.ArrayAdapter;
+ import android.widget.ListView;
++import android.widget.Toast;
+ 
+ import androidx.appcompat.app.AppCompatActivity;
+ import androidx.room.Room;
+ 
++import com.example.androidapp.api.PostAPI;
++import com.example.androidapp.api.WebServiceAPI;
+ import com.example.androidapp.databinding.ActivityContactListBinding;
+ import com.google.android.material.floatingactionbutton.FloatingActionButton;
+ 
+ import java.util.ArrayList;
+ import java.util.List;
+ 
++import retrofit2.Call;
++import retrofit2.Callback;
++import retrofit2.Response;
++
+ public class ContactList extends AppCompatActivity {
+     List<Chat> chats = new ArrayList<Chat>();
+ 
+@@ -53,18 +60,11 @@
+     private AppDB db;
+     private ChatDao chatDao;
+     private ArrayAdapter<Chat> adapter;
++    private String connectedUserID;
+ 
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+ 
+-
+-
+-//        chats.add(new Chat(new Contact("a","a","a","a","a")));
+-//        chats.add(new Chat(new Contact("b","b","b","b","b")));
+-//        chats.add(new Chat(new Contact("c","c","c","c","c")));
+-
+-
+-
+         super.onCreate(savedInstanceState);
+         binding = ActivityContactListBinding.inflate(getLayoutInflater());
+         setContentView(binding.getRoot());
+@@ -74,12 +74,15 @@
+ //        });
+ 
+ //        db= Room.databaseBuilder(getApplicationContext(), AppDB.class, "DivDB").allowMainThreadQueries().build();
++        connectedUserID = getIntent().getExtras().getString("username");
+         chatDao = AppDB.getDb(getBaseContext()).chatDao();
++        String connecteduser = "?connecteduser="+connectedUserID;
+         //contacts = postDao.index().get(0).getChats();
++        //getcontacts(connectedUserID);
+ 
+         FloatingActionButton addContactBtn = findViewById(R.id.addContactBtn);
+         addContactBtn.setOnClickListener(view -> {
+-            Contact contact = new Contact("a","a","a","a");
++            Contact contact = new Contact("a","a","a","a","a");
+             Chat newChat = new Chat("a");
+             chatDao.insert(newChat);
+ //            chats.clear();
+@@ -116,6 +119,25 @@
+         chats.addAll(chatDao.index());
+         adapter.notifyDataSetChanged();
+     }
++    public void getcontacts(String username) {
++        //String connecteduser = "?connecteduser="+username;
++        PostAPI postAPI = new PostAPI();
++        WebServiceAPI webServiceAPI = postAPI.getWebServiceAPI();
++        Call<List<Contact>> call = webServiceAPI.getcontacts(username);
++        call.enqueue(new Callback<List<Contact>>() {
++            @Override
++            public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
++                //7261
++                //Toast.makeText(LoginPage.this, "SUCCESS !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
++                List<Contact> contacts = response.body();
++                Intent intent = new Intent(ContactList.this, ContactList.class);
++                //intent.putExtra("username",user.getUsername());
++                startActivity(intent);
++            }
+ 
+-
+-}
+\ No newline at end of file
++            @Override
++            public void onFailure(Call<List<Contact>> call, Throwable t) {
++                Toast.makeText(ContactList.this, "FAILED !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
++            }
++        });
++}}

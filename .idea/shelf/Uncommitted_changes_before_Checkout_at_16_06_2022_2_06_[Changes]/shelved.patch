@@ -1,0 +1,17 @@
+Index: app/src/main/java/com/example/androidapp/api/WebServiceAPI.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.androidapp.api;\r\nimport com.example.androidapp.Contact;\r\nimport com.example.androidapp.User;\r\n//import retrofit2.Call;\r\nimport retrofit2.Call;\r\nimport retrofit2.http.Body;\r\nimport retrofit2.http.DELETE;\r\nimport retrofit2.http.GET;\r\nimport retrofit2.http.POST;\r\nimport retrofit2.http.Path;\r\nimport java.util.List;\r\n\r\npublic interface WebServiceAPI {\r\n    @POST(\"Users/login/{username}/{password}\")\r\n    Call<User> login(@Path(\"username\") String loginUsername,@Path(\"password\") String loginPassword);\r\n\r\n    @GET(\"contacts?connecteduser={username}\")\r\n    Call<List<Contact>> getcontacts(@Path(\"username\") String username);\r\n\r\n//    @DELETE(\"posts/{id}\")\r\n//    Call<Void> deletePost(@Path(\"id\") int id);\r\n}\r\n
+===================================================================
+diff --git a/app/src/main/java/com/example/androidapp/api/WebServiceAPI.java b/app/src/main/java/com/example/androidapp/api/WebServiceAPI.java
+--- a/app/src/main/java/com/example/androidapp/api/WebServiceAPI.java	
++++ b/app/src/main/java/com/example/androidapp/api/WebServiceAPI.java	
+@@ -14,7 +14,7 @@
+     @POST("Users/login/{username}/{password}")
+     Call<User> login(@Path("username") String loginUsername,@Path("password") String loginPassword);
+ 
+-    @GET("contacts?connecteduser={username}")
++    @GET("contacts{username}")
+     Call<List<Contact>> getcontacts(@Path("username") String username);
+ 
+ //    @DELETE("posts/{id}")
