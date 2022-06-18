@@ -74,40 +74,15 @@ public class ContactList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityContactListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        // Button addContact = findViewById(R.id.addContactBtn);
-//        addContact.setOnClickListener(view -> {
-//
-//        });
 
-//        db= Room.databaseBuilder(getApplicationContext(), AppDB.class, "DivDB").allowMainThreadQueries().build();
         contactDao = AppDB.getDb(getBaseContext()).contactDao();
         messageDao = AppDB.getDb(getBaseContext()).messageDao();
-        //contacts = postDao.index().get(0).getChats();
         UsernameID = getIntent().getExtras().getString("username");
-        //String trying = "?connecteduser=" + UsernameID;
-        //String urlEncoded = Uri.encode(trying, ALLOWED_URI_CHARS);
         get_contacts(UsernameID);
-//        AppDB.updateRoomDB(UsernameID);
-//        System.out.println("========================================");
-//        for (Contact contact : contactDao.index()) {
-//            System.out.println(contact);
-//        }
-//        System.out.println("========================================");
-        //FloatingActionButton addContactBtn = findViewById(R.id.addContactBtn);
         FloatingActionButton openDialog = findViewById(R.id.addContactBtn);
-        //addContactBtn.setOnClickListener(view -> {
             openDialog.setOnClickListener(v -> {
                 showCustomDialog();
             });
-            //showCustomDialog();
-            //Contact contact = new Contact("a","a","a","a");
-            //Chat newChat = new Chat("a");
-            //chatDao.insert(newChat);
-//            chats.clear();
-//            chats.addAll(chatDao.index());
-//            adapter.notifyDataSetChanged();
-            //onResume();
-       // });
 
         ListView lvContacts = findViewById(R.id.ContactList);
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, contacts);
