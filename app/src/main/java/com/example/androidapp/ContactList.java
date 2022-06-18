@@ -32,10 +32,15 @@
 
 package com.example.androidapp;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -56,7 +61,6 @@ import retrofit2.Response;
 
 public class ContactList extends AppCompatActivity {
     List<Contact> contacts = new ArrayList<Contact>();
-    //private static final String ALLOWED_URI_CHARS = "@#&=*+-_.,:!?()/~'%";
     private ActivityContactListBinding binding;
     //private AppDB db;
     private ContactDao contactDao;
@@ -89,16 +93,21 @@ public class ContactList extends AppCompatActivity {
 //            System.out.println(contact);
 //        }
 //        System.out.println("========================================");
-        FloatingActionButton addContactBtn = findViewById(R.id.addContactBtn);
-        addContactBtn.setOnClickListener(view -> {
+        //FloatingActionButton addContactBtn = findViewById(R.id.addContactBtn);
+        FloatingActionButton openDialog = findViewById(R.id.addContactBtn);
+        //addContactBtn.setOnClickListener(view -> {
+            openDialog.setOnClickListener(v -> {
+                showCustomDialog();
+            });
+            //showCustomDialog();
             //Contact contact = new Contact("a","a","a","a");
             //Chat newChat = new Chat("a");
             //chatDao.insert(newChat);
 //            chats.clear();
 //            chats.addAll(chatDao.index());
 //            adapter.notifyDataSetChanged();
-            onResume();
-        });
+            //onResume();
+       // });
 
         ListView lvContacts = findViewById(R.id.ContactList);
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, contacts);
@@ -120,7 +129,70 @@ public class ContactList extends AppCompatActivity {
         });
 
     }
+    void showCustomDialog(){
+        final Dialog dialog = new Dialog(ContactList.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.custom_add_contact);
 
+        final EditText contact_username = dialog.findViewById(R.id.contact_username);
+        final EditText contact_name = dialog.findViewById(R.id.contact_nickname);
+        final EditText contact_server = dialog.findViewById(R.id.contact_server);
+        Button add_contact_submitBtn = dialog.findViewById(R.id.add_contact_submitBtn);
+        add_contact_submitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username = contact_username.getText().toString();
+                String nickname = contact_name.getText().toString();
+                String server = contact_server.getText().toString();
+                if(username.isEmpty() || nickname.isEmpty() || server.isEmpty()){
+                    Toast.makeText(ContactList.this, "One of the fields is empty", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    PostAPI postAPI = new PostAPI();
+                    WebServiceAPI webServiceAPI = postAPI.getWebServiceAPI();
+                    Call<Void> call = webServiceAPI.invitation(new Invitation(UsernameID,username,server));
+                    call.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if(response.raw().code() == 201) {
+                                Call<Void> call2 = webServiceAPI.addcontact(new AddContact(UsernameID,username,nickname,server));
+                                call2.enqueue(new Callback<Void>() {
+                                    @Override
+                                    public void onResponse(Call<Void> call2, Response<Void> response2) {
+                                        if(response2.raw().code() == 200){
+                                            get_contacts(UsernameID);
+                                            dialog.dismiss();
+                                        }
+                                        else {
+                                            Toast.makeText(ContactList.this, "Failed to add the contact", Toast.LENGTH_SHORT).show();
+                                            onResume();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Void> call2, Throwable t) {
+                                        Toast.makeText(ContactList.this, "Failed to contact with the server", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                            else {
+                                Toast.makeText(ContactList.this, "Failed to add the contact", Toast.LENGTH_SHORT).show();
+                                onResume();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+
+                        }
+                    });
+                }
+            }
+        });
+
+        dialog.show();
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -136,8 +208,6 @@ public class ContactList extends AppCompatActivity {
         call.enqueue(new Callback<List<Contact>>() {
             @Override
             public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
-                //7261
-                //Toast.makeText(LoginPage.this, "SUCCESS !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
                 List<Contact> contacts = response.body();
                 AppDB.clearRoomDB();
                 for (Contact contact:contacts) {
@@ -146,8 +216,6 @@ public class ContactList extends AppCompatActivity {
                     call2.enqueue(new Callback<List<Message>>() {
                         @Override
                         public void onResponse(Call<List<Message>> call2, Response<List<Message>> response2) {
-                            //7261
-                            //Toast.makeText(LoginPage.this, "SUCCESS !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
                             List<Message> messages = response2.body();
                             for (Message message:messages) {
                                 message.setContactID(contact.getId());
@@ -157,7 +225,7 @@ public class ContactList extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<List<Message>> call2, Throwable t) {
-                            Toast.makeText(ContactList.this, "FAILED !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ContactList.this, "Failed to contact with the server", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -166,7 +234,7 @@ public class ContactList extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Contact>> call, Throwable t) {
-                Toast.makeText(ContactList.this, "FAILED !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ContactList.this, "Failed to contact with the server", Toast.LENGTH_SHORT).show();
             }
         });
     }

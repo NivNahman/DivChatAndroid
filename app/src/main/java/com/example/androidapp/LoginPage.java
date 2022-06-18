@@ -16,6 +16,9 @@ import androidx.room.Room;
 import com.example.androidapp.api.PostAPI;
 import com.example.androidapp.api.WebServiceAPI;
 import com.example.androidapp.databinding.ActivityLoginBinding;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.List;
 
@@ -30,6 +33,7 @@ public class LoginPage extends AppCompatActivity {
     private boolean isSigningUp = false;
     private ActivityLoginBinding binding;
     private AppDB db;
+    private String my_token;
     ContactDao postDao;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +65,6 @@ public class LoginPage extends AppCompatActivity {
             Intent intent = new Intent(this, SignUpPage.class);
             startActivity(intent);
         });
-
         Log.i("LoginPage", "onCreate");
     }
 
@@ -101,17 +104,35 @@ public class LoginPage extends AppCompatActivity {
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                //7261
-                //Toast.makeText(LoginPage.this, "SUCCESS !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
-                User user = response.body();
-                Intent intent = new Intent(LoginPage.this, ContactList.class);
-                intent.putExtra("username",user.getUsername());
-                startActivity(intent);
+                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(LoginPage.this, instanceIdResult -> {
+                    my_token = instanceIdResult.getToken();
+                });
+                if(response.raw().code() == 200){
+                    User user = response.body();
+                    Call<Void> call2 = webServiceAPI.addToken(user.getUsername(),my_token);
+                    call2.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            Intent intent = new Intent(LoginPage.this, ContactList.class);
+                            intent.putExtra("username",user.getUsername());
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+
+                        }
+                    });
+                }
+                if(response.raw().code() != 200){
+                    Toast.makeText(LoginPage.this, "Username or password are incorrect", Toast.LENGTH_SHORT).show();
+                    onResume();
+                }
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(LoginPage.this, "FAILED !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginPage.this, "Failed to connect To the server", Toast.LENGTH_SHORT).show();
             }
         });
     }

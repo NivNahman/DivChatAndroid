@@ -7,7 +7,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.androidapp.api.PostAPI;
+import com.example.androidapp.api.WebServiceAPI;
 import com.example.androidapp.databinding.ActivitySignUpBinding;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignUpPage extends AppCompatActivity {
 
@@ -18,23 +24,42 @@ public class SignUpPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(binding.getRoot());
         binding.signupBtn.setOnClickListener(v -> {
-            if(binding.signupBtn.getText().toString().isEmpty() || binding.Password.getText().toString().isEmpty() ||
+            if(binding.Username.getText().toString().isEmpty() || binding.Password.getText().toString().isEmpty() ||
             binding.Nickname.getText().toString().isEmpty() || binding.Password2.getText().toString().isEmpty()){
                 Toast.makeText(SignUpPage.this, "There is an empty field", Toast.LENGTH_SHORT).show();
             }
-            if(binding.Password.getText().toString().compareTo(binding.Password2.getText().toString()) != 0){
+            else if(binding.Password.getText().toString().compareTo(binding.Password2.getText().toString()) != 0){
                 Toast.makeText(SignUpPage.this, "The Passwords Do Not Match", Toast.LENGTH_SHORT).show();
             }
-            if(!binding.Password.getText().toString().matches(".*[0-9].*")){
+            else if(!binding.Password.getText().toString().matches(".*[0-9].*")){
                 Toast.makeText(SignUpPage.this, "Password must contain a number", Toast.LENGTH_SHORT).show();
             }
-            if(!binding.Password.getText().toString().matches(".*[A-Z].*")){
+            else if(!binding.Password.getText().toString().matches(".*[A-Z].*")){
                 Toast.makeText(SignUpPage.this, "Password must contain a uppercase letter", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                PostAPI postAPI = new PostAPI();
+                WebServiceAPI webServiceAPI = postAPI.getWebServiceAPI();
+                Call<Void> call = webServiceAPI.signup(binding.Username.getText().toString(), binding.Nickname.getText().toString(), binding.Password.getText().toString());
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        Intent intent = new Intent(SignUpPage.this, ContactList.class);
+                        intent.putExtra("username",binding.Username.getText().toString());
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+
+                    }
+                });
             }
         });
         binding.toLogin.setOnClickListener(v -> {
-            Intent intent = new Intent(this, LoginPage.class);
-            startActivity(intent);
+                    Intent intent = new Intent(SignUpPage.this, LoginPage.class);
+                    intent.putExtra("username",binding.Username.getText().toString());
+                    startActivity(intent);
         });
         Log.i("SignUpPage", "onCreate");
     }
