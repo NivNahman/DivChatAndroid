@@ -28,7 +28,6 @@ public interface WebServiceAPI {
 
     @POST("Users/signUp")
     Call<Void> signup(@Query("username") String username,@Query("nickname") String nickname,@Query("password") String password);
-    //http://localhost:7261/api/Users/signUp?username=Or&nickname=or&password=1
 
     @GET("Users/messages")
     Call<List<Message>> getmessageofuser(@Query("connecteduser") String username);
