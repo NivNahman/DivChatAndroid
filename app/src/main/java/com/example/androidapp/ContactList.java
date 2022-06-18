@@ -77,11 +77,9 @@ public class ContactList extends AppCompatActivity {
 
         contactDao = AppDB.getDb(getBaseContext()).contactDao();
         messageDao = AppDB.getDb(getBaseContext()).messageDao();
-        //contacts = postDao.index().get(0).getChats();
         UsernameID = getIntent().getExtras().getString("username");
         get_contacts(UsernameID);
         FloatingActionButton openDialog = findViewById(R.id.addContactBtn);
-        //addContactBtn.setOnClickListener(view -> {
             openDialog.setOnClickListener(v -> {
                 showCustomDialog();
             });
