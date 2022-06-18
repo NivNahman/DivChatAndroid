@@ -56,7 +56,6 @@ import retrofit2.Response;
 
 public class ContactList extends AppCompatActivity {
     List<Contact> contacts = new ArrayList<Contact>();
-    //private static final String ALLOWED_URI_CHARS = "@#&=*+-_.,:!?()/~'%";
     private ActivityContactListBinding binding;
     //private AppDB db;
     private ContactDao contactDao;
@@ -136,8 +135,6 @@ public class ContactList extends AppCompatActivity {
         call.enqueue(new Callback<List<Contact>>() {
             @Override
             public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
-                //7261
-                //Toast.makeText(LoginPage.this, "SUCCESS !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
                 List<Contact> contacts = response.body();
                 AppDB.clearRoomDB();
                 for (Contact contact:contacts) {
@@ -146,8 +143,6 @@ public class ContactList extends AppCompatActivity {
                     call2.enqueue(new Callback<List<Message>>() {
                         @Override
                         public void onResponse(Call<List<Message>> call2, Response<List<Message>> response2) {
-                            //7261
-                            //Toast.makeText(LoginPage.this, "SUCCESS !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
                             List<Message> messages = response2.body();
                             for (Message message:messages) {
                                 message.setContactID(contact.getId());
@@ -157,7 +152,7 @@ public class ContactList extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<List<Message>> call2, Throwable t) {
-                            Toast.makeText(ContactList.this, "FAILED !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ContactList.this, "Failed to contact with the server", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -166,7 +161,7 @@ public class ContactList extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Contact>> call, Throwable t) {
-                Toast.makeText(ContactList.this, "FAILED !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ContactList.this, "Failed to contact with the server", Toast.LENGTH_SHORT).show();
             }
         });
     }

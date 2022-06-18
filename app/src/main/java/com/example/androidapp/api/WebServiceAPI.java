@@ -5,6 +5,7 @@ import com.example.androidapp.Addmsg;
 import com.example.androidapp.Contact;
 import com.example.androidapp.Message;
 import com.example.androidapp.User;
+import com.example.androidapp.transfer;
 //import retrofit2.Call;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -23,6 +24,9 @@ public interface WebServiceAPI {
     @POST("Users/login/{username}/{password}")
     Call<User> login(@Path("username") String loginUsername,@Path("password") String loginPassword);
 
+    @POST("Users/addToken/{username}/{token}")
+    Call<Void> addToken(@Path("username") String username, @Path("token") String token);
+
     @GET("contacts")
     Call<List<Contact>> getcontacts(@Query("connecteduser") String username);
 
@@ -34,6 +38,9 @@ public interface WebServiceAPI {
 
     @POST("contacts/{contactname}/messages")
     Call<Void> newmessage(@Path("contactname") String contactname2, @Body Addmsg addmsg);
+
+    @POST("transfer")
+    Call<Void> transfer(@Body transfer transfermsg);
 //    @DELETE("posts/{id}")
 //    Call<Void> deletePost(@Path("id") int id);
 }
