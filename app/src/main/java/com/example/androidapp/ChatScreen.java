@@ -5,23 +5,16 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import com.example.androidapp.api.PostAPI;
 import com.example.androidapp.api.WebServiceAPI;
 import com.example.androidapp.databinding.ActivityChatScreenBinding;
-import com.example.androidapp.databinding.ItemContainerSentMessageBinding;
-import com.example.androidapp.databinding.ItemContainerRecivedMessageBinding;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +84,7 @@ public class ChatScreen extends AppCompatActivity {
     public void new_message(String contact_id,String ConnectedUsername, String content){
         PostAPI postAPI = new PostAPI();
         WebServiceAPI webServiceAPI = postAPI.getWebServiceAPI();
-        Call<Void> call = webServiceAPI.transfer(new transfer(ConnectedUsername, contact_id, content));
+        Call<Void> call = webServiceAPI.transfer(new Transfer(ConnectedUsername, contact_id, content));
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
