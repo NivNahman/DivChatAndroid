@@ -15,7 +15,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.androidapp.api.PostAPI;
 import com.example.androidapp.api.WebServiceAPI;
 import com.example.androidapp.databinding.ActivityChatScreenBinding;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.Service;
+import android.content.Intent;
+import android.os.Build;
+import android.os.IBinder;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,24 +64,16 @@ public class ChatScreen extends AppCompatActivity {
             Intent intent = new Intent(this, ContactList.class);
             startActivity(intent);
         });
-        name.setText(""+contact_id+"");
+        name.setText("" + contact_id + "");
         messageDao = AppDB.getDb(getBaseContext()).messageDao();
         binding.chatRecyclerView.setAdapter(chatAdapter);
         input = findViewById(R.id.inputMessage);
         send = findViewById(R.id.layoutSend);
         send.setOnClickListener(v -> {
-//            input = findViewById(R.id.inputMessage);
-//            Message message = new Message(id, input.getText().toString(),java.time.LocalDateTime.now().toString(),true);
-//            message.setContactID(contact_id);
-//            messageDao.insert(message);
             content = input.getText().toString();
-            new_message(contact_id,ConnectedUsername, content);
-            // messages.add(message);
-            //onResume();
+            new_message(contact_id, ConnectedUsername, content);
             input.setText("");
-
         });
-
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -106,7 +111,6 @@ public class ChatScreen extends AppCompatActivity {
                                         message.setContactID(contact_id);
                                         messageDao.insert(message);
                                     }
-
                                     onResume();
                                 }
 
