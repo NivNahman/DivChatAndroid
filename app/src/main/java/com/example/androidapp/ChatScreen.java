@@ -94,7 +94,7 @@ public class ChatScreen extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //messages.clear();
+        messages.clear();
         messages.addAll(messageDao.get(contact_id));
         chatAdapter.notifyDataSetChanged();
         binding.chatRecyclerView.setVisibility(View.VISIBLE);
@@ -163,7 +163,10 @@ public class ChatScreen extends AppCompatActivity {
             public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
                 List<Contact> contacts = response.body();
                 AppDB.clearRoomDB();
+                messages.clear();
                 for (Contact contact : contacts) {
+                    String [] server = contact.getServer().split(":");
+                    contact.setServer("10.0.2.2:" + server[1]);
                     contactDao.insert(contact);
                     Call<List<Message>> call2 = webServiceAPI.getmessages(contact.getId(), username);
                     call2.enqueue(new Callback<List<Message>>() {

@@ -32,6 +32,8 @@
 
 package com.example.androidapp;
 
+import static com.example.androidapp.MyApplication.context;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -45,8 +47,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import com.example.androidapp.api.ContactAPI;
 import com.example.androidapp.api.PostAPI;
 import com.example.androidapp.api.WebServiceAPI;
 import com.example.androidapp.databinding.ActivityContactListBinding;
@@ -63,12 +67,12 @@ import retrofit2.Response;
 public class ContactList extends AppCompatActivity {
     List<Contact> contacts = new ArrayList<Contact>();
     private ActivityContactListBinding binding;
-    //private AppDB db;
     private ContactDao contactDao;
     private MessageDao messageDao;
-    private ArrayAdapter<Contact> adapter;
+    private ContactAdapter adapter = new ContactAdapter(contacts);
     private String UsernameID;
-
+    private RecyclerView lvContacts;
+    private String server;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -85,24 +89,20 @@ public class ContactList extends AppCompatActivity {
                 showCustomDialog();
             });
 
-        ListView lvContacts = findViewById(R.id.ContactList);
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, contacts);
+        lvContacts = binding.ContactList;
         lvContacts.setAdapter(adapter);
 
+        lvContacts.addOnItemTouchListener(
+                new RecyclerItemClickListener(this, lvContacts ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        Intent intent = new Intent(context, ChatScreen.class);
+                        intent.putExtra("contact_id", contacts.get(position).getId());
+                        intent.putExtra("connectedUsername", UsernameID);
+                        startActivity(intent);
+                    }
 
-        lvContacts.setOnItemLongClickListener((adapterView, view, i, l) -> {
-            Contact chat = contacts.remove(i);
-            contactDao.delete(chat);
-            adapter.notifyDataSetChanged();
-            return true;
-        });
-
-        lvContacts.setOnItemClickListener((adapterView, view, i, l) -> {
-            Intent intent = new Intent(this, ChatScreen.class);
-            intent.putExtra("contact_id", contacts.get(i).getId());
-            intent.putExtra("connectedUsername", UsernameID);
-            startActivity(intent);
-        });
+                })
+        );
 
     }
     void showCustomDialog(){
@@ -120,14 +120,20 @@ public class ContactList extends AppCompatActivity {
             public void onClick(View v) {
                 String username = contact_username.getText().toString();
                 String nickname = contact_name.getText().toString();
-                String server = contact_server.getText().toString();
+                server = contact_server.getText().toString();
                 if(username.isEmpty() || nickname.isEmpty() || server.isEmpty()){
                     Toast.makeText(ContactList.this, "One of the fields is empty", Toast.LENGTH_SHORT).show();
                 }
                 else {
+                    String [] arr = server.split(":",2);
+                    if (arr[0].equals("localhost")){
+                        server = "10.0.2.2:" + arr[1];
+                    }
+                    ContactAPI contactAPI = new ContactAPI(server);
+                    WebServiceAPI contactwebservice = contactAPI.getWebServiceAPI();
                     PostAPI postAPI = new PostAPI();
                     WebServiceAPI webServiceAPI = postAPI.getWebServiceAPI();
-                    Call<Void> call = webServiceAPI.invitation(new Invitation(UsernameID,username,server));
+                    Call<Void> call = contactwebservice.invitation(new Invitation(UsernameID,username,"10.0.2.2:7261"));
                     call.enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
@@ -142,6 +148,7 @@ public class ContactList extends AppCompatActivity {
                                         }
                                         else {
                                             Toast.makeText(ContactList.this, "Failed to add the contact", Toast.LENGTH_SHORT).show();
+                                            dialog.dismiss();
                                             onResume();
                                         }
                                     }
@@ -149,18 +156,20 @@ public class ContactList extends AppCompatActivity {
                                     @Override
                                     public void onFailure(Call<Void> call2, Throwable t) {
                                         Toast.makeText(ContactList.this, "Failed to contact with the server", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
                                     }
                                 });
                             }
                             else {
                                 Toast.makeText(ContactList.this, "Failed to add the contact", Toast.LENGTH_SHORT).show();
-                                onResume();
+                                dialog.dismiss();
+                                //onResume();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
-
+                            dialog.dismiss();
                         }
                     });
                 }
@@ -187,6 +196,8 @@ public class ContactList extends AppCompatActivity {
                 List<Contact> contacts = response.body();
                 AppDB.clearRoomDB();
                 for (Contact contact:contacts) {
+                    String [] server = contact.getServer().split(":");
+                    contact.setServer("10.0.2.2:" + server[1]);
                     contactDao.insert(contact);
                     Call<List<Message>> call2 = webServiceAPI.getmessages(contact.getId(), username);
                     call2.enqueue(new Callback<List<Message>>() {
