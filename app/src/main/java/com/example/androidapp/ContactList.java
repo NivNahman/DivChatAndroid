@@ -170,6 +170,7 @@ public class ContactList extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
+                            Toast.makeText(ContactList.this, "Failed to add the contact", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                         }
                     });
