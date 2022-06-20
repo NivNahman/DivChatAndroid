@@ -41,48 +41,39 @@ public class FireBaseService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
         if (message.getNotification() != null) {
-//            PostAPI postAPI = new PostAPI();
-//            WebServiceAPI webServiceAPI = postAPI.getWebServiceAPI();
-//            Call<String> call = webServiceAPI.getconnecteduser();
-//            call.enqueue(new Callback<String>() {
-//                @Override
-//                public void onResponse(Call<String> call, Response<String> response) {
-//                    ConnectedUsername = response.body();
-//                    Intent intent = new Intent(FireBaseService.this,ContactList.class);
-//                    intent.putExtra("username", ConnectedUsername);
-//                    PendingIntent pendingIntent = PendingIntent.getActivity(FireBaseService.this,0,intent,FLAG_UPDATE_CURRENT);
-//                    createNotificationChannel();
-//                    NotificationCompat.Builder builder = new NotificationCompat.Builder(FireBaseService.this, "1")
-//                            .setSmallIcon(R.drawable.ic_launcher_foreground)
-//                            .setContentTitle(message.getNotification().getTitle())
-//                            .setContentText(message.getNotification().getBody())
-//                            .setContentIntent(pendingIntent)
-//                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-//                            .setAutoCancel(true);
-//                    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(FireBaseService.this);
-//                    notificationManager.notify(1, builder.build());
-//                }
-//
-//                @Override
-//                public void onFailure(Call<String> call, Throwable t) {
-//                    int x = 100;
-//                }
-//            });
-            Intent intent = new Intent(this,ChatScreen.class);
-            intent.putExtra("connectedUsername", "Niv");
-            intent.putExtra("contact_id","Dvir");
-            intent.putExtra("contact_server", "10.0.2.2:7261");
-            PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,FLAG_UPDATE_CURRENT);
-            createNotificationChannel();
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "1")
-                    .setSmallIcon(R.drawable.ic_launcher_foreground)
-                    .setContentTitle(message.getNotification().getTitle())
-                    .setContentText(message.getNotification().getBody())
-                    .setContentIntent(pendingIntent)
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    .setAutoCancel(true);
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-            notificationManager.notify(1, builder.build());
+            String [] arr = message.getNotification().getTitle().split(";");
+            Intent intent;
+            if (arr[0].equals("transfer")) {
+                intent = new Intent(this,ChatScreen.class);
+                intent.putExtra("connectedUsername", arr[1]);
+                intent.putExtra("contact_id",arr[2]);
+                intent.putExtra("contact_server", arr[3]);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,FLAG_UPDATE_CURRENT);
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "1")
+                        .setSmallIcon(R.drawable.ic_send)
+                        .setContentTitle("Message from: " + arr[2])
+                        .setContentText(message.getNotification().getBody())
+                        .setContentIntent(pendingIntent)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setAutoCancel(true);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+                notificationManager.notify(1, builder.build());
+            }
+            else{
+                intent = new Intent(this,ContactList.class);
+                intent.putExtra("username", arr[1]);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,FLAG_UPDATE_CURRENT);
+                createNotificationChannel();
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "1")
+                        .setSmallIcon(R.drawable.ic_add_friend)
+                        .setContentTitle("You have a new friend")
+                        .setContentIntent(pendingIntent)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setAutoCancel(true);
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+                notificationManager.notify(1, builder.build());
+            }
         }
     }
 

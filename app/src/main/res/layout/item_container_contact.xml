@@ -12,8 +12,9 @@
         android:layout_width="88dp"
         android:layout_height="74dp"
         android:src="@drawable/divlogo"
-        tools:layout_editor_absoluteX="4dp"
-        tools:layout_editor_absoluteY="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
         tools:ignore="MissingConstraints" />
 
     <TextView
