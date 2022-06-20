@@ -44,7 +44,9 @@ public class FireBaseService extends FirebaseMessagingService {
                     .setContentTitle(message.getNotification().getTitle())
                     .setContentText(message.getNotification().getBody())
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+            if(message.getNotification().getBody().toString().equals("Added you as a friend")){
 
+            }
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
             notificationManager.notify(1, builder.build());
             PostAPI postAPI = new PostAPI();

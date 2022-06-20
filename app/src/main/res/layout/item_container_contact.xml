@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_contact"
+    android:padding="4dp">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="88dp"
+        android:layout_height="74dp"
+        android:src="@drawable/divlogo"
+        tools:layout_editor_absoluteX="4dp"
+        tools:layout_editor_absoluteY="4dp"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/contact_nickname"
+        android:layout_width="271dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="4dp"
+        android:padding="12dp"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.222"
+        app:layout_constraintWidth_percent="0.8"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/lastMessage"
+        android:layout_width="215dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/black"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@id/contact_nickname"
+        app:layout_constraintTop_toBottomOf="@id/contact_nickname" />
+
+    <TextView
+        android:id="@+id/lastDate"
+        android:layout_width="83dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/black"
+        android:textSize="10sp"
+        app:layout_constraintStart_toEndOf="@+id/lastMessage"
+        tools:layout_editor_absoluteY="71dp"
+        tools:ignore="MissingConstraints" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

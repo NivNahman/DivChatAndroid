@@ -62,6 +62,7 @@ public class ChatScreen extends AppCompatActivity {
         back = findViewById(R.id.imageBack);
         back.setOnClickListener(v -> {
             Intent intent = new Intent(this, ContactList.class);
+            intent.putExtra("username",ConnectedUsername);
             startActivity(intent);
         });
         name.setText("" + contact_id + "");
