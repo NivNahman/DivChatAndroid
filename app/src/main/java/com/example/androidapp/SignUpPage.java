@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.androidapp.api.PostAPI;
 import com.example.androidapp.api.WebServiceAPI;
 import com.example.androidapp.databinding.ActivitySignUpBinding;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -18,7 +19,7 @@ import retrofit2.Response;
 public class SignUpPage extends AppCompatActivity {
 
     private ActivitySignUpBinding binding;
-
+    private String my_token;
     protected void onCreate(Bundle savedInstanceState) {
         binding = ActivitySignUpBinding.inflate(getLayoutInflater());
         super.onCreate(savedInstanceState);
@@ -44,9 +45,26 @@ public class SignUpPage extends AppCompatActivity {
                 call.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
-                        Intent intent = new Intent(SignUpPage.this, ContactList.class);
-                        intent.putExtra("username",binding.Username.getText().toString());
-                        startActivity(intent);
+//                        Intent intent = new Intent(SignUpPage.this, ContactList.class);
+//                        intent.putExtra("username",binding.Username.getText().toString());
+//                        startActivity(intent);
+                        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(SignUpPage.this, instanceIdResult -> {
+                            my_token = instanceIdResult.getToken();
+                            Call<Void> call2 = webServiceAPI.addToken(binding.Username.getText().toString(), my_token);
+                            call2.enqueue(new Callback<Void>() {
+                                @Override
+                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                    Intent intent = new Intent(SignUpPage.this, ContactList.class);
+                                    intent.putExtra("username", binding.Username.getText().toString());
+                                    startActivity(intent);
+                                }
+
+                                @Override
+                                public void onFailure(Call<Void> call, Throwable t) {
+
+                                }
+                            });
+                        });
                     }
 
                     @Override

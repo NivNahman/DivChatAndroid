@@ -123,7 +123,7 @@ public class ContactList extends AppCompatActivity {
         add_contact_submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = contact_username.getText().toString();
+                  String username = contact_username.getText().toString();
                 String nickname = contact_name.getText().toString();
                 String server = contact_server.getText().toString();
                 if(username.isEmpty() || nickname.isEmpty() || server.isEmpty()){
