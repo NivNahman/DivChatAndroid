@@ -98,6 +98,7 @@ public class ContactList extends AppCompatActivity {
                         Intent intent = new Intent(context, ChatScreen.class);
                         intent.putExtra("contact_id", contacts.get(position).getId());
                         intent.putExtra("connectedUsername", UsernameID);
+                        intent.putExtra("contact_server",contacts.get(position).getServer());
                         startActivity(intent);
                     }
 
