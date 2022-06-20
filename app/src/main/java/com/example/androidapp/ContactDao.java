@@ -18,6 +18,9 @@ public interface ContactDao {
     @Query("SELECT * FROM Contact_table WHERE id = :id")
     Contact get(int id);
 
+//    @Query("SELECT server FROM Contact_table WHERE id = :username")
+//    Contact get_server(String username);
+
     @Insert
     void insert(Contact... users);
 
