@@ -18,8 +18,8 @@
 
     <TextView
         android:id="@+id/contact_nickname"
-        android:layout_width="271dp"
-        android:layout_height="50dp"
+        android:layout_width="174dp"
+        android:layout_height="43dp"
         android:layout_marginStart="4dp"
         android:padding="12dp"
         android:textColor="@color/white"
@@ -27,15 +27,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.222"
+        app:layout_constraintVertical_bias="0.114"
         app:layout_constraintWidth_percent="0.8"
         tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/lastMessage"
-        android:layout_width="215dp"
-        android:layout_height="32dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="169dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="12dp"
         android:textColor="@color/black"
         android:textSize="10sp"
         app:layout_constraintStart_toStartOf="@id/contact_nickname"
@@ -43,14 +43,14 @@
 
     <TextView
         android:id="@+id/lastDate"
-        android:layout_width="83dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="103dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="4dp"
         android:textColor="@color/black"
         android:textSize="10sp"
         app:layout_constraintStart_toEndOf="@+id/lastMessage"
-        tools:layout_editor_absoluteY="71dp"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteY="65dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -188,6 +188,7 @@ package com.example.androidapp;
 
 import static com.example.androidapp.MyApplication.context;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -224,6 +225,7 @@ public class ContactList extends AppCompatActivity {
     private MessageDao messageDao;
     private ContactAdapter adapter = new ContactAdapter(contacts);
     private String UsernameID;
+    private RecyclerView lvContacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -241,8 +243,10 @@ public class ContactList extends AppCompatActivity {
             showCustomDialog();
         });
 
-        RecyclerView lvContacts = findViewById(R.id.ContactList);
+        lvContacts = binding.ContactList;
         lvContacts.setAdapter(adapter);
+
+//        binding.ContactList.setAdapter(adapter);
 
         lvContacts.addOnItemTouchListener(
                 new RecyclerItemClickListener(this, lvContacts ,new RecyclerItemClickListener.OnItemClickListener() {
@@ -256,20 +260,6 @@ public class ContactList extends AppCompatActivity {
                 })
         );
 
-
-//        lvContacts.setOnItemLongClickListener((adapterView, view, i, l) -> {
-//            Contact chat = contacts.remove(i);
-//            contactDao.delete(chat);
-//            adapter.notifyDataSetChanged();
-//            return true;
-//        });
-//
-//        lvContacts.setOnItemClickListener((adapterView, view, i, l) -> {
-//            Intent intent = new Intent(this, ChatScreen.class);
-//            intent.putExtra("contact_id", contacts.get(i).getId());
-//            intent.putExtra("connectedUsername", UsernameID);
-//            startActivity(intent);
-//        });
 
     }
     void showCustomDialog(){
@@ -336,12 +326,14 @@ public class ContactList extends AppCompatActivity {
 
         dialog.show();
     }
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onResume() {
         super.onResume();
         contacts.clear();
         contacts.addAll(contactDao.index());
         adapter.notifyDataSetChanged();
+        lvContacts.setVisibility(View.VISIBLE);
     }
 
     public void get_contacts(String username) {

@@ -9,8 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.androidapp.databinding.ItemContainerContactBinding;
-import com.example.androidapp.databinding.ItemContainerRecivedMessageBinding;
-import com.example.androidapp.databinding.ItemContainerSentMessageBinding;
 
 import java.util.List;
 
@@ -80,6 +78,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 lastMessage = "";
                 lastDate = "";
             }
+            binding.contactNickname.setText(contact.getName());
             binding.lastMessage.setText(lastMessage);
             binding.lastDate.setText(lastDate);
         }

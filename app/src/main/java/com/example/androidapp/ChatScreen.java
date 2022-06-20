@@ -38,7 +38,7 @@ import retrofit2.Response;
 
 public class ChatScreen extends AppCompatActivity {
 
-    static public int id = 9;
+    //static public int id = 9;
     private List<Message> messages = new ArrayList<Message>();
     private ActivityChatScreenBinding binding;
     private MessageDao messageDao;
