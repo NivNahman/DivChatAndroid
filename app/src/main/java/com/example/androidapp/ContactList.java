@@ -32,6 +32,8 @@
 
 package com.example.androidapp;
 
+import static com.example.androidapp.MyApplication.context;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -45,9 +47,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
-import com.example.androidapp.api.ContactAPI;
 import com.example.androidapp.api.PostAPI;
 import com.example.androidapp.api.WebServiceAPI;
 import com.example.androidapp.databinding.ActivityContactListBinding;
@@ -60,8 +62,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ContactList extends AppCompatActivity {
     List<Contact> contacts = new ArrayList<Contact>();
@@ -69,10 +69,10 @@ public class ContactList extends AppCompatActivity {
     //private AppDB db;
     private ContactDao contactDao;
     private MessageDao messageDao;
-    private ArrayAdapter<Contact> adapter;
+    private ContactAdapter adapter = new ContactAdapter(contacts);
     private String UsernameID;
-    Retrofit retrofit2;
-    private WebServiceAPI webServiceAPI2;
+    private RecyclerView lvContacts;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -89,25 +89,22 @@ public class ContactList extends AppCompatActivity {
                 showCustomDialog();
             });
 
-        ListView lvContacts = findViewById(R.id.ContactList);
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, contacts);
+        lvContacts = binding.ContactList;
         lvContacts.setAdapter(adapter);
 
+//        binding.ContactList.setAdapter(adapter);
 
-        lvContacts.setOnItemLongClickListener((adapterView, view, i, l) -> {
-            Contact chat = contacts.remove(i);
-            contactDao.delete(chat);
-            adapter.notifyDataSetChanged();
-            return true;
-        });
+        lvContacts.addOnItemTouchListener(
+                new RecyclerItemClickListener(this, lvContacts ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        Intent intent = new Intent(context, ChatScreen.class);
+                        intent.putExtra("contact_id", contacts.get(position).getId());
+                        intent.putExtra("connectedUsername", UsernameID);
+                        startActivity(intent);
+                    }
 
-        lvContacts.setOnItemClickListener((adapterView, view, i, l) -> {
-            Intent intent = new Intent(this, ChatScreen.class);
-            intent.putExtra("contact_id", contacts.get(i).getId());
-            intent.putExtra("contact_server", contacts.get(i).getServer());
-            intent.putExtra("connectedUsername", UsernameID);
-            startActivity(intent);
-        });
+                })
+        );
 
     }
     void showCustomDialog(){
@@ -130,11 +127,9 @@ public class ContactList extends AppCompatActivity {
                     Toast.makeText(ContactList.this, "One of the fields is empty", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    ContactAPI contactAPI = new ContactAPI(server);
-                    WebServiceAPI contactwebservice = contactAPI.getWebServiceAPI();
                     PostAPI postAPI = new PostAPI();
                     WebServiceAPI webServiceAPI = postAPI.getWebServiceAPI();
-                    Call<Void> call = contactwebservice.invitation(new Invitation(UsernameID,username,"10.0.2.2:7261"));
+                    Call<Void> call = webServiceAPI.invitation(new Invitation(UsernameID,username,server));
                     call.enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
