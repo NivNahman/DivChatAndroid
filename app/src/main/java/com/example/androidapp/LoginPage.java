@@ -102,24 +102,25 @@ public class LoginPage extends AppCompatActivity {
             public void onResponse(Call<User> call, Response<User> response) {
                 FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(LoginPage.this, instanceIdResult -> {
                     my_token = instanceIdResult.getToken();
+                    //               });
+                    if (response.raw().code() == 200) {
+                        User user = response.body();
+                        Call<Void> call2 = webServiceAPI.addToken(user.getUsername(), my_token);
+                        call2.enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                Intent intent = new Intent(LoginPage.this, ContactList.class);
+                                intent.putExtra("username", user.getUsername());
+                                startActivity(intent);
+                            }
+
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+
+                            }
+                        });
+                    }
                 });
-                if(response.raw().code() == 200){
-                    User user = response.body();
-                    Call<Void> call2 = webServiceAPI.addToken(user.getUsername(),my_token);
-                    call2.enqueue(new Callback<Void>() {
-                        @Override
-                        public void onResponse(Call<Void> call, Response<Void> response) {
-                            Intent intent = new Intent(LoginPage.this, ContactList.class);
-                            intent.putExtra("username",user.getUsername());
-                            startActivity(intent);
-                        }
-
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable t) {
-
-                        }
-                    });
-                }
                 if(response.raw().code() != 200){
                     Toast.makeText(LoginPage.this, "Username or password are incorrect", Toast.LENGTH_SHORT).show();
                     onResume();

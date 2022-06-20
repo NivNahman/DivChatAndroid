@@ -37,55 +37,15 @@ public class FireBaseService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
-        if(message.getNotification()!=null){
+        if (message.getNotification() != null) {
             createNotificationChannel();
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this,"1")
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "1")
                     .setSmallIcon(R.drawable.ic_launcher_foreground)
                     .setContentTitle(message.getNotification().getTitle())
                     .setContentText(message.getNotification().getBody())
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-            if(message.getNotification().getBody().toString().equals("Added you as a friend")){
-
-            }
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
             notificationManager.notify(1, builder.build());
-            PostAPI postAPI = new PostAPI();
-            WebServiceAPI webServiceAPI = postAPI.getWebServiceAPI();
-            contact_id = message.getNotification().getTitle().toString();
-            ConnectedUsername = message.getNotification().getImageUrl().toString();
-            content = message.getNotification().getBody().toString();
-            Call<Void> call2 = webServiceAPI.newmessage(contact_id,new Addmsg(ConnectedUsername,contact_id,content));
-            call2.enqueue(new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call2, Response<Void> response2) {
-                    for (Message m : messages) {
-                        messageDao.delete(m);
-                    }
-                    messages.clear();
-                    Call<List<Message>> call3 = webServiceAPI.getmessages(contact_id, ConnectedUsername);
-                    call3.enqueue(new retrofit2.Callback<List<Message>>() {
-                        @Override
-                        public void onResponse(Call<List<Message>> call3, Response<List<Message>> response3) {
-                            List<Message> messages2 = response3.body();
-                            for (Message message : messages2) {
-                                message.setContactID(contact_id);
-                                messageDao.insert(message);
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<List<Message>> call3, Throwable t) {
-                            System.out.println("connection failed");
-                        }
-                    });
-                    //onResume();
-                }
-
-                @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-                    Toast.makeText(FireBaseService.this, "FAILED !!!!!!!!!!!", Toast.LENGTH_SHORT).show();
-                }
-            });
         }
     }
 
