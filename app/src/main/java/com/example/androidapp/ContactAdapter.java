@@ -55,13 +55,6 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             binding = itemContainerContactBinding;
         }
 
-//        @Override
-//        public void onClick(View v) {
-//            Intent intent = new Intent(this, ChatScreen.class);
-//            intent.putExtra("contact_id", contacts.get(i).getId());
-//            intent.putExtra("connectedUsername", UsernameID);
-//            startActivity(intent);
-//        }
 
         void setData(Contact contact){
             String lastMessage, lastDate;

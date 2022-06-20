@@ -119,7 +119,7 @@ public class ContactList extends AppCompatActivity {
         add_contact_submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = contact_username.getText().toString();
+                  String username = contact_username.getText().toString();
                 String nickname = contact_name.getText().toString();
                 server = contact_server.getText().toString();
                 if(username.isEmpty() || nickname.isEmpty() || server.isEmpty()){
@@ -170,6 +170,7 @@ public class ContactList extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
+                            Toast.makeText(ContactList.this, "Failed to add the contact", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                         }
                     });

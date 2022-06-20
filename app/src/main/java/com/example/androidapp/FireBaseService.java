@@ -47,6 +47,7 @@ public class FireBaseService extends FirebaseMessagingService {
                 intent = new Intent(this,ChatScreen.class);
                 intent.putExtra("connectedUsername", arr[1]);
                 intent.putExtra("contact_id",arr[2]);
+                arr[3] = "10.0.2.2:" + arr[3].split(":")[1];
                 intent.putExtra("contact_server", arr[3]);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,FLAG_UPDATE_CURRENT);
                 createNotificationChannel();
