@@ -46,8 +46,10 @@ public interface WebServiceAPI {
 
     @POST("transfer")
     Call<Void> transfer(@Body Transfer transfermsg);
+
     @GET("transfer")
     Call<String> getconnecteduser();
+
     @POST("invitations")
     Call<Void> invitation(@Body Invitation invitationmsg);
 
