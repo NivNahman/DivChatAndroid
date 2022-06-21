@@ -34,6 +34,8 @@ package com.example.androidapp;
 
 import static com.example.androidapp.MyApplication.context;
 
+import static java.lang.String.join;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -73,6 +75,7 @@ public class ContactList extends AppCompatActivity {
     private String UsernameID;
     private RecyclerView lvContacts;
     private String server;
+    private Thread t;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -83,7 +86,11 @@ public class ContactList extends AppCompatActivity {
         contactDao = AppDB.getDb(getBaseContext()).contactDao();
         messageDao = AppDB.getDb(getBaseContext()).messageDao();
         UsernameID = getIntent().getExtras().getString("username");
+        binding.welcome4.setText("Hey " + UsernameID);
+
+
         get_contacts(UsernameID);
+        //t = Thread.currentThread();
         FloatingActionButton openDialog = findViewById(R.id.addContactBtn);
             openDialog.setOnClickListener(v -> {
                 showCustomDialog();
@@ -195,6 +202,11 @@ public class ContactList extends AppCompatActivity {
         call.enqueue(new Callback<List<Contact>>() {
             @Override
             public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
+//                try {
+//                    t.join();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
                 List<Contact> contacts = response.body();
                 AppDB.clearRoomDB();
                 for (Contact contact:contacts) {
@@ -225,6 +237,7 @@ public class ContactList extends AppCompatActivity {
             public void onFailure(Call<List<Contact>> call, Throwable t) {
                 Toast.makeText(ContactList.this, "Failed to contact with the server", Toast.LENGTH_SHORT).show();
             }
+
         });
     }
 

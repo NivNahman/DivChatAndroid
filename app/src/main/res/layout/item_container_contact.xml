@@ -1,57 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/background_contact"
+    android:layout_marginBottom="5dp"
     android:padding="4dp">
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="88dp"
-        android:layout_height="74dp"
-        android:src="@drawable/divlogo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:src="@drawable/default_picture"
         tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/contact_nickname"
-        android:layout_width="174dp"
-        android:layout_height="43dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
+        android:layout_toRightOf="@+id/imageView"
         android:padding="12dp"
         android:textColor="@color/white"
-        android:textSize="13sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.114"
-        app:layout_constraintWidth_percent="0.8"
+        android:textSize="25sp"
+        android:textStyle="bold"
         tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/lastMessage"
-        android:layout_width="169dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="12dp"
-        android:textColor="@color/black"
-        android:textSize="10sp"
-        app:layout_constraintStart_toStartOf="@id/contact_nickname"
-        app:layout_constraintTop_toBottomOf="@id/contact_nickname" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/contact_nickname"
+        android:layout_toRightOf="@+id/imageView"
+        android:textColor="@color/white"
+        android:paddingLeft="12dp"
+        android:layout_marginStart="4dp"
+        android:textSize="20dp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/lastDate"
-        android:layout_width="103dp"
-        android:layout_height="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:textColor="@color/black"
-        android:textSize="10sp"
-        app:layout_constraintStart_toEndOf="@+id/lastMessage"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteY="65dp" />
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:layout_below="@+id/contact_nickname"
+        android:layout_alignParentRight="true"
+        tools:ignore="MissingConstraints" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

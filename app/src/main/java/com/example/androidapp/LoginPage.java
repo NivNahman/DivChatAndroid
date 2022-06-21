@@ -15,6 +15,7 @@ import com.example.androidapp.api.PostAPI;
 import com.example.androidapp.api.WebServiceAPI;
 import com.example.androidapp.databinding.ActivityLoginBinding;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
@@ -28,12 +29,14 @@ import retrofit2.Response;
 public class LoginPage extends AppCompatActivity {
     private EditText login_username, login_password;
     private Button login_submitbtn;
+    private FloatingActionButton settingBtn;
     private TextView alreadyHaveAccountBtn;
     private boolean isSigningUp = false;
     private ActivityLoginBinding binding;
     private AppDB db;
     private String my_token;
     ContactDao postDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +44,7 @@ public class LoginPage extends AppCompatActivity {
         login_username = binding.loginUsername;
         login_password = binding.loginPassword;
         login_submitbtn = binding.loginSubmitBtn;
+        settingBtn = binding.settingBtn;
         alreadyHaveAccountBtn = binding.alreadyHaveAccountBtn;
 //        db = Room.databaseBuilder(getApplicationContext(), AppDB.class, "DivDB")
 //                .allowMainThreadQueries()
@@ -52,13 +56,16 @@ public class LoginPage extends AppCompatActivity {
         setContentView(binding.getRoot());
         //Button loginBtn = findViewById(R.id.loginbtn);
         binding.loginSubmitBtn.setOnClickListener(v -> {
-            if(binding.loginUsername.getText().toString().isEmpty() || binding.loginPassword.getText().toString().isEmpty()){
+            if (binding.loginUsername.getText().toString().isEmpty() || binding.loginPassword.getText().toString().isEmpty()) {
                 Toast.makeText(LoginPage.this, "There is an empty field", Toast.LENGTH_SHORT).show();
-            }
-            else{
-                login(binding.loginUsername.getText().toString(),binding.loginPassword.getText().toString());
+            } else {
+                login(binding.loginUsername.getText().toString(), binding.loginPassword.getText().toString());
             }
 
+        });
+        settingBtn.setOnClickListener(v->{
+            Intent intent = new Intent(this, Setting.class);
+            startActivity(intent);
         });
         alreadyHaveAccountBtn.setOnClickListener(v -> {
             Intent intent = new Intent(this, SignUpPage.class);
@@ -96,17 +103,18 @@ public class LoginPage extends AppCompatActivity {
         super.onRestart();
         Log.i("LoginPage", "onRestart");
     }
-    public void login(String username,String password) {
+
+    public void login(String username, String password) {
         PostAPI postAPI = new PostAPI();
         WebServiceAPI webServiceAPI = postAPI.getWebServiceAPI();
-        Call<User> call = webServiceAPI.login(username,password);
+        Call<User> call = webServiceAPI.login(username, password);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(LoginPage.this, instanceIdResult -> {
-                    my_token = instanceIdResult.getToken();
-                    //               });
-                    if (response.raw().code() == 200) {
+                if (response.raw().code() == 200) {
+                    FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(LoginPage.this, instanceIdResult -> {
+                        my_token = instanceIdResult.getToken();
+                        //});
                         User user = response.body();
                         Call<Void> call2 = webServiceAPI.addToken(user.getUsername(), my_token);
                         call2.enqueue(new Callback<Void>() {
@@ -122,9 +130,10 @@ public class LoginPage extends AppCompatActivity {
 
                             }
                         });
-                    }
-                });
-                if(response.raw().code() != 200){
+                        //}
+                    });
+                }
+                if (response.raw().code() != 200) {
                     Toast.makeText(LoginPage.this, "Username or password are incorrect", Toast.LENGTH_SHORT).show();
                     onResume();
                 }
@@ -133,7 +142,9 @@ public class LoginPage extends AppCompatActivity {
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(LoginPage.this, "Failed to connect To the server", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
 }
+
