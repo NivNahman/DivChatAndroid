@@ -21,10 +21,13 @@ Then, install
 "Install-Package Microsoft.EntityFrameworkcore.Tools -version 6.0.1"
 </li>
 Finally create the database:
+	<li>
 	1) First create a migration by typing: "add-migration InitialMigration" 
 	   in the PM console. 
+	</li>
+	<li>
 	2) Then apply the migration using: "update-database"
-
+	</li>
 <u>Next:</u> please install the firebase 
 <p>
 if you have problems you can watch how to connect the client with the firebase here: 
