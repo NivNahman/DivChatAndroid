@@ -28,7 +28,7 @@ Finally create the database:
 	<li>
 	2) Then apply the migration using: "update-database"
 	</li>
-	------------------------------------------------------------------------------------
+	------------------------------------------------------------------------------------<p>
 <u>Next:</u> please install the firebase 
 <p>
 if you have problems you can watch how to connect the client with the firebase here: 
