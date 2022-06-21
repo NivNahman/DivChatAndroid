@@ -23,5 +23,7 @@ Finally create the database:
 	2) Then apply the migration using: "update-database"
 
 <u>Next:</u> please install the firebase 
+<p>
 if you have problems you can watch how to connect the client with the firebase here: 
+<p>
 https://objectstorage.eu-frankfurt-1.oraclecloud.com/n/fry9ihsciykj/b/video_bucket/o/f6/f623648d50da068a280c7a2032265d37b9bafeea.mp4
