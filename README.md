@@ -3,8 +3,8 @@ Third assignment of Advanced Programming 2 course at BIU.
 
 Our Server localhost:7261
 
-In this project we have a database that will contain our data for the users, contacts and messaging.
-To install the maria-db data base please follow the next steps:
+In this project we have a database that will contain our data for the users, contacts and messages.
+To install the maria-db please follow the next steps:
 <li>
 please download it from here: https://mariadb.org/
 </li>
@@ -22,17 +22,6 @@ Finally create the database:
 	   in the PM console. 
 	2) Then apply the migration using: "update-database"
 
-
-Dependecies:
-React-bootstrap
-React-router-dom
-
-How to run it? Please first install the following packages:
-npm install react-bootstrap
-npm install react-router-dom
-npm init -y
-npm install @microsoft/signalr
-
-Run Both RankPage, WebApiServer
-Start by using npm start.
-Have Fun :)
+<u>Next:</u> please install the firebase 
+if you have problems you can watch how to connect the client with the firebase here: 
+https://objectstorage.eu-frankfurt-1.oraclecloud.com/n/fry9ihsciykj/b/video_bucket/o/f6/f623648d50da068a280c7a2032265d37b9bafeea.mp4
