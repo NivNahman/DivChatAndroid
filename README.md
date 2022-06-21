@@ -1,5 +1,7 @@
 # DivChatAndroid
 Third assignment of Advanced Programming 2 course at BIU.
+<p>
+This Project Works with the React Project from assinment 2 !
 
 Our Server localhost:7261
 
