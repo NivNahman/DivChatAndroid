@@ -39,4 +39,7 @@ To Run the project:
 </li>
 <li>
 3) Signup with a New User
-	</li>
+</li>
+<li>
+4) Have Fun :)
+</li>
